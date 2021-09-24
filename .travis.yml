@@ -1,4 +1,5 @@
 language: node_js
+version: 1.0
 node_js:
 - '14'
 # before_install:
@@ -12,6 +13,7 @@ before_deploy:
     git checkout master;
     fi;
 deploy:
+  edge: true
   provider: heroku
   app: netflix-jul-zas
   api_key:
