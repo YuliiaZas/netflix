@@ -23,13 +23,6 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run client-install && npm run build --prefix front-end"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/YuliiaZas/netflix.git"
-  },
   "author": "Yuliia Zasiadko",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/YuliiaZas/netflix/issues"
-  }
+  "license": "ISC"
 }
