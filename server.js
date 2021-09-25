@@ -38,7 +38,7 @@ app.use((err, req, res, next) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname + '/front-end/dist/netflix/index.html'));
+  res.sendFile(path.join(__dirname + '/front-end/build/index.html'));
 });
 
 app.use((req, res, next) => {
