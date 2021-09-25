@@ -12,7 +12,6 @@ import Header from './components/layout/Header'
 function App() {
   return (
     <div>
-      {/* <Header /> */}
       <Switch>
         <Route path='/' exact>
           <Login />
