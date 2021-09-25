@@ -18,7 +18,7 @@ const {showsRouther} = require('./back-end/src/controllers/showsController');
 const {friendsRouther} = require('./back-end/src/controllers/friendsController');
 
 
-app.use(express.static(__dirname + '/front-end/dist/netflix'));
+app.use(express.static(__dirname + '/front-end/build'));
 
 app.use(express.json());
 app.use(morgan('tiny'));
