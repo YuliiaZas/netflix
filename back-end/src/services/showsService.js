@@ -23,10 +23,25 @@ const deleteShowFromUser = async (showId, userId) => {
         throw new InvalidRequestError(`Invalid request: ${err}`);
       }
     });
-};
+  };
+  
+  const putShowsArrToUser = async (showIdsArr, userId) => {
+    const user = await User.findOneAndUpdate({_id: userId},
+      {$set: showIdsArr}, {new: true, rawResult: true},
+      (err, doc) => {
+        if (err) {
+          throw new InvalidRequestError(`Invalid request: ${err}`);
+        }
+      });
+
+    if (!user.lastErrorObject.updatedExisting) {
+      throw new DataError(`Shows list for user ${_id} wasn't updated`);
+    }
+  };
 
 module.exports = {
   getShowsByUserId,
   putShowToUser,
   deleteShowFromUser,
+  putShowsArrToUser,
 };

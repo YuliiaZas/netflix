@@ -1,35 +1,41 @@
-import { Route, Switch } from 'react-router-dom';
 
-import Login from './pages/Login';
-import Shows from './pages/Shows';
-import Favorites from './pages/Favorites';
-import Friends from './pages/Friends';
-import Header from './components/layout/Header'
 
 // import logo from './logo.svg';
 // import './App.css';
 
+import { useSelector, useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+
+import AppRouter from './components/AppRouter';
+import { fetchShowsData, fetchLikedShowsData, sendLikedShowsData } from './store/showsRequestActions'
+
+let isInitial = true;
+
 function App() {
+  const shows = useSelector(state => state.shows);
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    dispatch(fetchShowsData());
+    // dispatch(fetchLikedShowsData());
+  }, [dispatch]);
+  
+  useEffect(() => {
+    if (isInitial) {
+      isInitial = false;
+      return;
+    }
+    if (shows.changed) {
+      console.log('send----')
+      dispatch(sendLikedShowsData(shows.likedShowsIds));
+
+    }
+  }, [shows.likedShowsIds, dispatch])
+
   return (
-    <div>
-      <Switch>
-        <Route path='/' exact>
-          <Login />
-        </Route>
-        <Route path='/'>
-          <Header />
-          <Route path='/shows'>
-            <Shows />
-          </Route>
-          <Route path='/favorites'>
-            <Favorites />
-          </Route>
-          <Route path='/friends'>
-            <Friends />
-          </Route>
-        </Route>
-      </Switch>
-    </div>
+    // <div>
+      <AppRouter />
+    // </div>
   );
 }
   
