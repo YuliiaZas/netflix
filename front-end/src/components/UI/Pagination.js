@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import classes from './Pagination.module.css';
+
 const Pagination = ({changePage}) => {
   const store = useSelector(state => state.shows);
 
@@ -14,12 +16,14 @@ const Pagination = ({changePage}) => {
   let pagesArray = getPagesArray();
 
   return (
-    <div className="page__wrapper">
+    <div className={classes.page__wrapper}>
       {pagesArray.map(p =>
         <span
             onClick={() => changePage(p)}
             key={p}
-            className={store.page === p ? 'page page__current' : 'page'}>
+            className={store.page === p 
+              ? `${classes.page} ${classes.page__current}` 
+              : `${classes.page}`}>
           {p}
         </span>
       )}

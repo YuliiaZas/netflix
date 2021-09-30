@@ -1,0 +1,17 @@
+.page__wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin: 30px auto;
+}
+
+.page {
+  padding: 10px;
+  border: 1px solid gray;
+  cursor: pointer;
+}
+
+.page__current {
+  border: 2px solid var(--color-main);
+  font-weight: bold;
+}
