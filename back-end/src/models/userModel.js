@@ -19,7 +19,7 @@ const User = mongoose.model('User', {
   },
   shows: [
     {
-      type: mongoose.Schema.Types.ObjectId
+      type: Number
     }
   ],
   friends: [

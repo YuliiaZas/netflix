@@ -9,13 +9,13 @@ export const fetchShowsData = () => {
       }
       return await response.json();
     };
-    
+
     try {
       const showsData = await fetchData();
       dispatch(showsActions.replaceAllShows(showsData));
       dispatch(showsActions.replaceCurrentShows());
     } catch (error) {
-      
+      console.log(error);
     }
   }
 }
@@ -23,7 +23,13 @@ export const fetchShowsData = () => {
 export const fetchLikedShowsData = (userId) => {
   return async (dispatch) => {
     const fetchData = async () => {
-      const response = await userId ? fetch(`api/shows/${userId}`) : fetch('api/shows');
+      const url = userId ? `/api/shows/${userId}` : '/api/shows';
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
       if (!response.ok) {
         throw new Error('Could not fetch liked shows data');
       }
@@ -32,31 +38,34 @@ export const fetchLikedShowsData = (userId) => {
 
     try {
       const likedShowsIds = await fetchData();
-      dispatch(showsActions.replaceLikedShowsId(likedShowsIds));
-      dispatch(showsActions.replaceLikedShows());
+      dispatch(showsActions.replaceLikedShowsIds(likedShowsIds));
     } catch (error) {
-      
+      console.log(error)
     }
   }
 }
 
 export const sendLikedShowsData = showsData => {
-  return async (dispatch) => {
-    dispatch();
+  return async () => {
+    // dispatch();
     const sendRequest = async () => {
-      const response = await fetch('api/shows', {
+      const response = await fetch('/api/shows', {
         method: 'PUT',
-        body: JSON.stringify(showsData)
+        body: JSON.stringify(showsData),
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
+        },
       });
       if (!response.ok) {
-        throw new Error('Sending showsData failed.')
+        throw new Error('Sending likedShowsData failed.')
       }
     };
 
     try {
       await sendRequest();
     } catch (error) {
-      
+      console.log(error);
     }
   }
 };

@@ -1,10 +1,11 @@
-import { useSelector } from 'react-redux';
 import ShowCard from './ShowCard';
 
+import classes from './ShowList.module.css';
+
 const ShowList = props => {
-  const currentShows = useSelector(state => state.shows.currentShows);
+  const currentShows = props.shows;
   return (
-    <section className="shows-card-grid">
+    <section className={classes["shows-card-grid"]}>
       {currentShows.map(show => (
         <ShowCard show={show} key={show.id}/>
       ))}

@@ -1,7 +1,7 @@
 const {User} = require('../models/userModel');
 
 const getAllFriendsByUserId = async (_id) => {
-  const friends = await User.find({friends: _id}, {__v: 0});
+  const { friends } = await User.find({_id});
   console.log(friends)
   return friends || [];
 };

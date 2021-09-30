@@ -1,5 +1,11 @@
+import { useSelector } from 'react-redux';
+
+import ShowList from '../components/ShowList';
+
 function Favorites() {
-  return <div>Favorites</div>;
+  const currentShows = useSelector(state => state.shows.likedShows);
+
+  return <ShowList shows={currentShows} />;
 }
 
 export default Favorites;

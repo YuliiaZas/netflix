@@ -28,19 +28,12 @@ const login = async ({email, password}) => {
   const user = await User.findOne({email});
 
   if (!user) {
-    console.log('!user')
     throw new AuthError('Invalid email or password');
   }
 
   if (!(await bcrypt.compare(password, user.password))) {
-    console.log('!password')
     throw new AuthError('Invalid email or password');
   }
-
-  console.log(jwt.sign({
-    _id: user._id,
-    email: user.email,
-  }, process.env.SECRET));
 
   return jwt.sign({
     _id: user._id,

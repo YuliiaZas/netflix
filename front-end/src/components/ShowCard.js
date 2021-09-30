@@ -1,7 +1,8 @@
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { showsActions } from '../store/showsSlice'
+
+import classes from './ShowCard.module.css';
 
 const ShowCard = props => {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ const ShowCard = props => {
   const likeShowHandler = () => {
     dispatch(showsActions.likeShow(props.show.id));
   };
+  
   const unlikeShowHandler = () => {
     dispatch(showsActions.unlikeShow(props.show.id));
   };
@@ -23,24 +25,24 @@ const ShowCard = props => {
   const end = getYear(props.show.ended) || 'Now';
 
   return (
-    <div className="card">
-      <div className="card__main-part">
+    <div className={classes.card}>
+      <div className={classes["card__main-part"]}>
         <img src={props.show.image.medium} alt={props.show.name} />
       </div>
-      <div className="card__additional-part">
-        <h3 className="card__title">{props.show.name}</h3>
-        <p className="card__content">{props.show.genres.join(', ')}</p>
-        {start && <p className="card__content">{start} - {end}</p>}
-        <p className="card__content">Rating: {props.show.rating.average || 'N/A'}</p>
-        <div className="card__buttons-container">
+      <div className={classes["card__additional-part"]}>
+        <h3 className={classes.card__title}>{props.show.name}</h3>
+        <p className={classes.card__content}>{props.show.genres.join(', ')}</p>
+        {start && <p className={classes.card__content}>{start} - {end}</p>}
+        <p className={classes.card__content}>Rating: {props.show.rating.average || 'N/A'}</p>
+        <div className={classes["card__buttons-container"]}>
           {!isShowLiked && <button type="button"
               onClick={likeShowHandler}
-              className="button card__button card__button--main">
+              className={`button ${classes.card__button} ${classes["card__button--main"]}`}>
             &#9825;
           </button>}
           {isShowLiked && <button type="button"
               onClick={unlikeShowHandler}
-              className="button card__button card__button--main">
+              className={`button ${classes.card__button} ${classes["card__button--main"]}`}>
             &#9829;
           </button>}
         </div>

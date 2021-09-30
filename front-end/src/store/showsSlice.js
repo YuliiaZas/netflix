@@ -5,7 +5,7 @@ const LIMIT = 12;
 const showsSlice = createSlice({
   name: 'shows',
   initialState: {
-    isAuth: true,
+    isAuth: Boolean(localStorage.getItem('token')),
     changed: false,
     page: 1,
     pageMax: 1,
@@ -23,9 +23,11 @@ const showsSlice = createSlice({
       state.isAuth = false;
     },
     replaceAllShows(state, action) {
-      console.log(state, action)
-      state.allShows = action.payload;
-      state.pageMax = Math.ceil(action.payload.length / LIMIT);
+      if (state.isAuth) {
+        console.log(state, action)
+        state.allShows = action.payload;
+        state.pageMax = Math.ceil(action.payload.length / LIMIT);
+      }
     },
     replacePage(state, action) {
       const page = action.payload;
@@ -39,15 +41,23 @@ const showsSlice = createSlice({
       state.offset = (state.page - 1) * LIMIT;
     },
     replaceCurrentShows(state) {
-      let startIndex = state.offset;
-      let endIndex = state.offset + LIMIT;
-      state.currentShows = state.allShows.slice(startIndex, endIndex);
+      if (state.isAuth) {
+        let startIndex = state.offset;
+        let endIndex = state.offset + LIMIT;
+        state.currentShows = state.allShows.slice(startIndex, endIndex);
+      }
     },
-    replaceLikedShows(state, action) {
-      state.likedShowsIds = action.payload;
-      state.likedShows = state.likedShowsIds.map(id => {
-        return state.allShows.find(show => show.id === id)
-      });
+    replaceLikedShowsIds(state, action) {
+      if (state.isAuth) {
+        state.likedShowsIds = action.payload;
+      }
+    },
+    replaceLikedShows(state) {
+      if (state.isAuth) {
+        state.likedShows = state.likedShowsIds.map(id => {
+          return state.allShows.find(show => show.id === id)
+        });
+      }
     },
     likeShow(state, action) {
       state.changed = true;
@@ -58,8 +68,8 @@ const showsSlice = createSlice({
     },
     unlikeShow(state, action) {
       state.changed = true;
-      state.likedShowsIds.filter(id => id !== action.payload);
-      state.likedShows.filter(show => show.id !== action.payload);
+      state.likedShowsIds = state.likedShowsIds.filter(id => id !== action.payload);
+      state.likedShows = state.likedShows.filter(show => show.id !== action.payload);
     }
   }
 });

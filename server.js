@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const path = require('path');
 const express = require('express');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 const app = express();
 
 const morgan = require('morgan');
@@ -17,12 +18,10 @@ const {authRouter} = require('./back-end/src/controllers/authController');
 const {showsRouther} = require('./back-end/src/controllers/showsController');
 const {friendsRouther} = require('./back-end/src/controllers/friendsController');
 
-
 app.use(express.static(__dirname + '/front-end/build'));
 
 app.use(express.json());
 app.use(morgan('tiny'));
-
 
 app.use('/api/auth', authRouter);
 app.use('/api/shows', [authMiddleware], showsRouther);
@@ -58,8 +57,9 @@ app.use((req, res, next) => {
 
     usersArray.forEach(usersRegistration);
 
-    app.listen(process.env.PORT || 8081);
-    console.error(`Server startup: ${process.env.PORT || 8081}`);
+    const port = process.env.PORT || 8082;
+    app.listen(port);
+    console.error(`Server startup: ${port}`);
   } catch (err) {
     console.error(`Error with server startup: ${err.message}`);
   }
