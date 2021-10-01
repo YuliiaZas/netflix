@@ -6,14 +6,21 @@ const showsSlice = createSlice({
   name: 'shows',
   initialState: {
     isAuth: Boolean(localStorage.getItem('token')),
-    changed: false,
+    likedShowsAreChanged: false,
     page: 1,
     pageMax: 1,
     offset: 0,
+    previousPageData: {
+      page: null,
+      pageMax: null,
+      offset: null,
+    },
     allShows: [],
     currentShows: [],
     likedShowsIds: [],
     likedShows: [],
+    searchValue: null,
+    searchResult: [],
   },
   reducers: {
     login(state) {
@@ -24,7 +31,6 @@ const showsSlice = createSlice({
     },
     replaceAllShows(state, action) {
       if (state.isAuth) {
-        console.log(state, action)
         state.allShows = action.payload;
         state.pageMax = Math.ceil(action.payload.length / LIMIT);
       }
@@ -40,11 +46,16 @@ const showsSlice = createSlice({
       }
       state.offset = (state.page - 1) * LIMIT;
     },
-    replaceCurrentShows(state) {
+    replaceCurrentShows(state, action) {
+      const isSearchActive = action.payload;
       if (state.isAuth) {
         let startIndex = state.offset;
         let endIndex = state.offset + LIMIT;
-        state.currentShows = state.allShows.slice(startIndex, endIndex);
+        if (isSearchActive) {
+          state.currentShows = state.searchResult.slice(startIndex, endIndex);
+        } else {
+          state.currentShows = state.allShows.slice(startIndex, endIndex);
+        }
       }
     },
     replaceLikedShowsIds(state, action) {
@@ -60,17 +71,48 @@ const showsSlice = createSlice({
       }
     },
     likeShow(state, action) {
-      state.changed = true;
+      state.likedShowsAreChanged = true;
       state.likedShowsIds.push(action.payload);
       state.likedShows.push(state.currentShows.find(item => {
         return item.id === action.payload
       }));
     },
     unlikeShow(state, action) {
-      state.changed = true;
+      state.likedShowsAreChanged = true;
       state.likedShowsIds = state.likedShowsIds.filter(id => id !== action.payload);
       state.likedShows = state.likedShows.filter(show => show.id !== action.payload);
-    }
+    },
+    replaceSearchValue(state, action) {
+      state.searchValue = action.payload;
+    },
+    replaceSearchResult(state, action) {
+      state.searchResult = action.payload;
+    },
+    updatePageInfo(state) {
+      if (state.searchValue !== null) {
+        if (!state.previousPageData.page) {
+          state.previousPageData = {
+            page: state.page,
+            pageMax: state.pageMax,
+            offset: state.offset,
+          };
+        }
+
+        state.page = 1;
+        state.pageMax = Math.ceil(state.searchResult.length / LIMIT);
+        state.offset = 0;
+      } else {
+        state.page = state.previousPageData.page;
+        state.pageMax = state.previousPageData.pageMax;
+        state.offset = state.previousPageData.offset;
+
+        state.previousPageData = {
+          page: null,
+          pageMax: null,
+          offset: null,
+        };
+      }
+    },
   }
 });
 

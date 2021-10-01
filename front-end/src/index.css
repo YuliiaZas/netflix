@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  font-family: var(--font-main);
 }
 
 :root {
@@ -14,6 +15,16 @@ body {
   --shadow-bottom: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
+#root > section {
+  max-width: 1200px;
+  min-height: calc(100vh - 125px);
+  margin: 20px auto;
+  background-color: white;
+  padding: 20px 60px;
+  box-sizing: border-box;
+  box-shadow: var(--shadow-bottom);
+}
+
 .button {
   padding: 8px 16px;
   height: 32px;
@@ -25,12 +36,71 @@ body {
   border: none;
 }
 
-#root > section {
-  max-width: 1200px;
-  min-height: calc(100vh - 125px);
-  margin: 20px auto;
-  background-color: white;
-  padding: 20px 60px;
+.button--main {
+  background: var(--color-main);
+  color: #FFFFFF;
+}
+
+.button--red {
+  background: var(--color-red);
+  color: #FFFFFF;
+}
+
+.button--additional {
+  background: #FFFFFF;
+  color: var(--color-main);
+}
+
+.form {
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: 60px;
+
+  position: absolute;
+  width: 320px;
+
+  background: #FFFFFF;
   box-shadow: var(--shadow-bottom);
+  border-radius: 4px;
+}
+
+.form__title {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+.form__label {
+  font-size: 14px;
+  line-height: 16px;
+  padding: 0px 4px;
+  margin: 2px 0px;
+}
+
+.form__input {
+  padding: 8px;
+  border: 0.5px solid #000000;
+  box-sizing: border-box;
+  border-radius: 4px;
+  margin: 2px 0px 20px;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.form__button {
+  background: var(--color-main);
+  color: #FFFFFF;
+  border: none;
+  font-weight: bold;
+}
+
+.form__button:disabled {
+  background: gray;
+  box-shadow: none;
+  cursor: auto;
 }

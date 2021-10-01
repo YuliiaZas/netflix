@@ -13,16 +13,16 @@ const AppRouter = () => {
   const isAuth = useSelector(state => state.shows.isAuth);
   return (
     <Switch>
-        <Route path='/' exact component={Login} />
-        {isAuth && (<Route path='/'>
-          <Header />
-          <Route path='/shows' component={Shows} />
-          <Route path='/favorites' component={Favorites} />
-          <Route path='/friends' component={Friends} />
-          <Redirect to='/shows' />
-        </Route>)}
-        <Redirect to='/' />
-      </Switch>
+      <Route path='/' exact component={Login} />
+      {isAuth && (<Route path='/'>
+        <Header />
+        <Route path='/shows' component={Shows} />
+        <Route path='/favorites' component={Favorites} />
+        <Route path='/friends' component={Friends} />
+        <Redirect path='*' to='/shows' />
+      </Route>)}
+      <Redirect to='/' />
+    </Switch>
   );
 }
 

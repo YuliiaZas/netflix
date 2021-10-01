@@ -3,7 +3,7 @@ const router = new express.Router();
 
 const {
   getAllFriendsByUserId,
-  searchUsersByNameOrEmail,
+  searchUsersByEmail,
   addFriendToUser,
   deleteFriendFromUser,
 } = require('../services/friendsService');
@@ -24,10 +24,10 @@ router.get('/', tryCatchWrapper(async (req, res) => {
   res.json(friendsInfo);
 }));
 
-router.get('/search', tryCatchWrapper(async (req, res) => {
+router.get('/search/:value', tryCatchWrapper(async (req, res) => {
   const {userId} = req.user;
-  const [, value] = Object.entries(req.query)[0];
-  const newfriends = await searchUsersByNameOrEmail(value, userId);
+  const value = req.params.value;
+  const newfriends = await searchUsersByEmail(value, userId);
   res.json(newfriends || []);
 }));
 

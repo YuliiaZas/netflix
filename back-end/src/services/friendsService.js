@@ -1,30 +1,17 @@
 const {User} = require('../models/userModel');
 
 const getAllFriendsByUserId = async (_id) => {
-  const { friends } = await User.find({_id});
-  console.log(friends)
-  return friends || [];
+  const { friends } = await User.findOne({_id});
+  const friendsArr = await User.find({_id: friends}, {_id: 1, email: 1, shows: 1})
+  return friendsArr || [];
 };
 
-const searchUsersByNameOrEmail = async (value, userId) => {
+const searchUsersByEmail = async (value, userId) => {
   const users = await User.find({
-    $or: [
-      {username: {$regex: `${value}`, $options: 'i'}},
-      {email: {$regex: `${value}`, $options: 'i'}}
-    ],
+    email: {$regex: `${value}`, $options: 'i'},
     friends: {$ne: {_id: userId}}
-  });
+  }, {_id: 1, email: 1, shows: 1});
   return users || [];
-};
-
-const addFriendToUser = async (friendId, userId) => {
-  User.findOneAndUpdate({_id: userId, friends: {$ne: friendId}}, 
-    {$push: {friends: friendId}}, {new: true},
-    (err, doc) => {
-      if (err) {
-        throw new InvalidRequestError(`Invalid request: ${err}`);
-      }
-    });
 };
 
 const deleteFriendFromUser = async (friendId, userId) => {
@@ -37,9 +24,19 @@ const deleteFriendFromUser = async (friendId, userId) => {
     });
 };
 
+const addFriendToUser = async (friendId, userId) => {
+  User.findOneAndUpdate({_id: userId, friends: {$ne: friendId}}, 
+    {$push: {friends: friendId}}, {new: true},
+    (err, doc) => {
+      if (err) {
+        throw new InvalidRequestError(`Invalid request: ${err}`);
+      }
+    });
+}
+
 module.exports = {
   getAllFriendsByUserId,
-  searchUsersByNameOrEmail,
+  searchUsersByEmail,
   addFriendToUser,
   deleteFriendFromUser,
 };

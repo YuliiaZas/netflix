@@ -1,12 +1,15 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { Fragment, useEffect } from 'react';
+import { useEffect } from 'react';
 
-import { fetchShowsData, fetchLikedShowsData, sendLikedShowsData } from '../store/showsRequestActions';
+import { fetchShowsData, fetchLikedShowsData, sendLikedShowsData, fetchShowsDataForSearch } from '../store/showsRequestActions';
 import { showsActions } from '../store/showsSlice';
 import ShowList from '../components/ShowList';
 import Pagination from '../components/UI/Pagination';
+import Search from '../components/UI/Search';
 
-let isInitial = true;
+let isSearchActive = false;
+let wasSearchActive = false;
+let searchValue = null;
 
 function Shows() {
   const store = useSelector(state => state.shows);
@@ -18,33 +21,58 @@ function Shows() {
   }, [dispatch]);
   
   useEffect(() => {
-    if (isInitial) {
-      isInitial = false;
-      return;
-    }
-    if (store.changed) {
+    if (store.likedShowsAreChanged) {
       dispatch(sendLikedShowsData(store.likedShowsIds));
-
     }
   }, [store.likedShowsIds, dispatch]);
 
   useEffect(() => {
-    if (isInitial) {
-      return;
+    if (store.allShows.length && store.likedShowsIds.length) {
+      dispatch(showsActions.replaceLikedShows(store.likedShowsIds));
     }
-    dispatch(showsActions.replaceLikedShows(store.likedShowsIds));
-  }, [store.allShows, dispatch]);
+  }, [store.allShows, store.likedShowsIds, dispatch]);
 
-  const currentShows = useSelector(state => state.shows.currentShows);
+  useEffect(() => {
+    if (store.allShows.length || store.searchResult.length) {
+      dispatch(showsActions.replaceCurrentShows(isSearchActive));
+    }
+  }, [store.page, store.allShows, store.searchResult, dispatch]);
+
+
+  useEffect(() => {
+    if (wasSearchActive) {
+      dispatch(showsActions.updatePageInfo());
+    }
+  }, [store.searchResult, dispatch]);
+
   const changePage = page => {
     dispatch(showsActions.replacePage(page));
-    dispatch(showsActions.replaceCurrentShows());
   };
 
-  return <Fragment>
-    <ShowList shows={currentShows} />
+  const search = value => {
+    isSearchActive = true;
+    wasSearchActive = true;
+    searchValue = value;
+    dispatch(showsActions.replaceSearchValue(value));
+    dispatch(fetchShowsDataForSearch(value));
+  };
+
+  const clearSearch =() => {
+    isSearchActive = false;
+    dispatch(showsActions.replaceSearchValue(null));
+    dispatch(fetchShowsDataForSearch(null));
+  };
+
+  return <section>
+    <Search 
+      title="Shows" 
+      onSearch={search} 
+      onClearSearch={clearSearch} 
+      searchNotEmpty={isSearchActive}/>
+    {isSearchActive && <h1>Search Result for "{searchValue}"</h1>}
+    <ShowList shows={store.currentShows} />
     <Pagination changePage={changePage} />
-  </Fragment>
+  </section>;
 }
 
 export default Shows;

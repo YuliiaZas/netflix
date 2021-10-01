@@ -1,19 +1,38 @@
 import { showsActions } from './showsSlice';
 
+const fetchData = async (value) => {
+  const url = value 
+    ? `https://api.tvmaze.com/search/shows?q=${value}`
+    : 'https://api.tvmaze.com/shows';
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error('Could not fetch shows data');
+  }
+  return await response.json();
+};
+
 export const fetchShowsData = () => {
   return async (dispatch) => {
-    const fetchData = async () => {
-      const response = await fetch('https://api.tvmaze.com/shows');
-      if (!response.ok) {
-        throw new Error('Could not fetch shows data');
-      }
-      return await response.json();
-    };
-
     try {
-      const showsData = await fetchData();
-      dispatch(showsActions.replaceAllShows(showsData));
-      dispatch(showsActions.replaceCurrentShows());
+      const shows = await fetchData();
+      dispatch(showsActions.replaceAllShows(shows));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
+export const fetchShowsDataForSearch = (value) => {
+  return async (dispatch) => {
+    try { 
+      if (value === null) {
+        dispatch(showsActions.replaceSearchResult([]));
+        return;
+      }
+      const showsData = await fetchData(value);
+      const shows = showsData.map(item => item.show)
+        .filter(show => show.status !== 'In Development');
+      dispatch(showsActions.replaceSearchResult(shows));
     } catch (error) {
       console.log(error);
     }
@@ -22,7 +41,7 @@ export const fetchShowsData = () => {
 
 export const fetchLikedShowsData = (userId) => {
   return async (dispatch) => {
-    const fetchData = async () => {
+    const fetchLikedShows = async () => {
       const url = userId ? `/api/shows/${userId}` : '/api/shows';
       const response = await fetch(url, {
         headers: {
@@ -37,17 +56,16 @@ export const fetchLikedShowsData = (userId) => {
     };
 
     try {
-      const likedShowsIds = await fetchData();
+      const likedShowsIds = await fetchLikedShows();
       dispatch(showsActions.replaceLikedShowsIds(likedShowsIds));
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 }
 
 export const sendLikedShowsData = showsData => {
   return async () => {
-    // dispatch();
     const sendRequest = async () => {
       const response = await fetch('/api/shows', {
         method: 'PUT',

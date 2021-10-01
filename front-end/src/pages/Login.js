@@ -20,13 +20,18 @@ function Login() {
 
   const loginUser = (tokenData) => {
     const {token} = tokenData;
-    const {_id: userId, email} = jwt.decode(token);
+    try {
+      const {_id: userId, email} = jwt.decode(token);
 
-    localStorage.setItem('token', token);
-    localStorage.setItem('userId', userId);
-    localStorage.setItem('userEmail', email);
-
-    dispatch(showsActions.login());
+      localStorage.setItem('token', token);
+      localStorage.setItem('userId', userId);
+      localStorage.setItem('userEmail', email);
+  
+      dispatch(showsActions.login());
+    } catch (error) {
+      console.log(error);
+      alert('Email or Password is Wrong')
+    }
   }
 
   const loginHandler = async (loginData) => {
